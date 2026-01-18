@@ -9,119 +9,106 @@ Original file is located at
 
 import streamlit as st
 import pandas as pd
-import pickle
-import numpy as np
+import datetime
 
-# Load trained model
-with open('best_rf_model.pkl', 'rb') as f:
-    model = pickle.load(f)
+st.set_page_config(page_title="Delivery Time Estimator", layout="centered")
 
-st.title("Zomato Delivery Time Prediction 🚀")
+st.title("🚴 Delivery Time Estimation App")
 
-st.write("Enter the order details to predict delivery time:")
+# ---------------------------
+# User Inputs
+# ---------------------------
 
-# ----------------------------
-# User inputs
-# ----------------------------
-# Numeric inputs
-delivery_person_age = st.number_input("Delivery Person Age", min_value=18, max_value=60, value=25)
-delivery_person_ratings = st.number_input("Delivery Person Ratings", min_value=1.0, max_value=5.0, value=4.5)
-distance_km = st.number_input("Distance (km)", min_value=0.1, max_value=50.0, value=5.0)
+# Delivery Person Info
+delivery_person_age = st.number_input(
+    "Delivery Person Age", min_value=18, max_value=60, value=25, key="delivery_person_age"
+)
 
-# Categorical inputs
-weather_conditions = st.selectbox("Weather Conditions", ["Sunny", "Rainy", "Stormy", "Cloudy"])
-road_traffic_density = st.selectbox("Road Traffic Density", ["Low", "Medium", "High", "Jam"])
-type_of_order = st.selectbox("Type of Order", ["Snack", "Meal", "Drinks"])
-type_of_vehicle = st.selectbox("Type of Vehicle", ["Bike", "Scooter", "Car"])
-festival = st.selectbox("Festival", ["Yes", "No"])
-city = st.selectbox("City", ["Metropolitan", "Urban", "Semi-Urban"])
-peak_hours = st.selectbox("Peak Hours?", [0, 1])
+delivery_person_ratings = st.number_input(
+    "Delivery Person Ratings", min_value=1.0, max_value=5.0, value=4.5, step=0.1, key="delivery_person_ratings"
+)
 
-# ----------------------------
-# Make prediction
-# ----------------------------
-if st.button("Predict Delivery Time ⏱️"):
-    # Create a single-row dataframe
-    input_df = pd.DataFrame({
-        'delivery_person_age': [delivery_person_age],
-        'delivery_person_ratings': [delivery_person_ratings],
-        'distance_km': [distance_km],
-        'weather_conditions': [weather_conditions],
-        'road_traffic_density': [road_traffic_density],
-        'type_of_order': [type_of_order],
-        'type_of_vehicle': [type_of_vehicle],
-        'festival': [festival],
-        'city': [city],
-        'peak_hours': [peak_hours]
-    })
+vehicle_condition = st.selectbox(
+    "Vehicle Condition",
+    options=["Excellent", "Good", "Average", "Poor"],
+    key="vehicle_condition"
+)
 
-    # Encode categoricals (same as training)
-    input_encoded = pd.get_dummies(input_df)
-    # Align with training columns
-    missing_cols = set(model.feature_names_in_) - set(input_encoded.columns)
-    for col in missing_cols:
-        input_encoded[col] = 0
-    input_encoded = input_encoded[model.feature_names_in_]
+type_of_vehicle = st.selectbox(
+    "Type of Vehicle",
+    options=["Bike", "Scooter", "Car", "Truck"],
+    key="type_of_vehicle"
+)
 
-    # Predict
-    prediction = model.predict(input_encoded)[0]
-    st.success(f"Estimated Delivery Time: {prediction:.2f} minutes")
-import streamlit as st
-import pandas as pd
-import pickle
-import numpy as np
+# Restaurant & Delivery Location
+restaurant_latitude = st.number_input(
+    "Restaurant Latitude", value=12.9716, key="restaurant_latitude"
+)
+restaurant_longitude = st.number_input(
+    "Restaurant Longitude", value=77.5946, key="restaurant_longitude"
+)
+delivery_latitude = st.number_input(
+    "Delivery Location Latitude", value=12.9352, key="delivery_latitude"
+)
+delivery_longitude = st.number_input(
+    "Delivery Location Longitude", value=77.6245, key="delivery_longitude"
+)
 
-# Load trained model
-with open('best_rf_model.pkl', 'rb') as f:
-    model = pickle.load(f)
+# Order Info
+order_date = st.date_input(
+    "Order Date", datetime.date.today(), key="order_date"
+)
+time_ordered = st.time_input(
+    "Time Ordered", datetime.datetime.now().time(), key="time_ordered"
+)
+time_order_picked = st.time_input(
+    "Time Order Picked", datetime.datetime.now().time(), key="time_order_picked"
+)
 
-st.title("Zomato Delivery Time Prediction 🚀")
+type_of_order = st.selectbox(
+    "Type of Order",
+    options=["Food", "Grocery", "Other"],
+    key="type_of_order"
+)
 
-st.write("Enter the order details to predict delivery time:")
+# Environment Info
+weather_conditions = st.selectbox(
+    "Weather Conditions",
+    options=["Sunny", "Rainy", "Stormy", "Foggy", "Snowy", "Windy"],
+    key="weather_conditions"
+)
 
-# ----------------------------
-# User inputs
-# ----------------------------
-# Numeric inputs
-delivery_person_age = st.number_input("Delivery Person Age", min_value=18, max_value=60, value=25)
-delivery_person_ratings = st.number_input("Delivery Person Ratings", min_value=1.0, max_value=5.0, value=4.5)
-distance_km = st.number_input("Distance (km)", min_value=0.1, max_value=50.0, value=5.0)
+road_traffic_density = st.selectbox(
+    "Road Traffic Density",
+    options=["Low", "Medium", "High", "Jam"],
+    key="road_traffic_density"
+)
 
-# Categorical inputs
-weather_conditions = st.selectbox("Weather Conditions", ["Sunny", "Rainy", "Stormy", "Cloudy"])
-road_traffic_density = st.selectbox("Road Traffic Density", ["Low", "Medium", "High", "Jam"])
-type_of_order = st.selectbox("Type of Order", ["Snack", "Meal", "Drinks"])
-type_of_vehicle = st.selectbox("Type of Vehicle", ["Bike", "Scooter", "Car"])
-festival = st.selectbox("Festival", ["Yes", "No"])
-city = st.selectbox("City", ["Metropolitan", "Urban", "Semi-Urban"])
-peak_hours = st.selectbox("Peak Hours?", [0, 1])
+# ---------------------------
+# Submit Button
+# ---------------------------
+if st.button("Predict Delivery Time", key="predict_button"):
+    # Example: Calculate dummy delivery time
+    import random
+    estimated_time = random.randint(20, 60)  # placeholder for ML model
+    st.success(f"Estimated Delivery Time: {estimated_time} minutes")
 
-# ----------------------------
-# Make prediction
-# ----------------------------
-if st.button("Predict Delivery Time ⏱️"):
-    # Create a single-row dataframe
-    input_df = pd.DataFrame({
-        'delivery_person_age': [delivery_person_age],
-        'delivery_person_ratings': [delivery_person_ratings],
-        'distance_km': [distance_km],
-        'weather_conditions': [weather_conditions],
-        'road_traffic_density': [road_traffic_density],
-        'type_of_order': [type_of_order],
-        'type_of_vehicle': [type_of_vehicle],
-        'festival': [festival],
-        'city': [city],
-        'peak_hours': [peak_hours]
-    })
-
-    # Encode categoricals (same as training)
-    input_encoded = pd.get_dummies(input_df)
-    # Align with training columns
-    missing_cols = set(model.feature_names_in_) - set(input_encoded.columns)
-    for col in missing_cols:
-        input_encoded[col] = 0
-    input_encoded = input_encoded[model.feature_names_in_]
-
-    # Predict
-    prediction = model.predict(input_encoded)[0]
-    st.success(f"Estimated Delivery Time: {prediction:.2f} minutes")
+    # Optional: Show all inputs for verification
+    st.subheader("Input Summary")
+    input_data = {
+        "Delivery Person Age": delivery_person_age,
+        "Delivery Person Ratings": delivery_person_ratings,
+        "Vehicle Condition": vehicle_condition,
+        "Type of Vehicle": type_of_vehicle,
+        "Restaurant Latitude": restaurant_latitude,
+        "Restaurant Longitude": restaurant_longitude,
+        "Delivery Latitude": delivery_latitude,
+        "Delivery Longitude": delivery_longitude,
+        "Order Date": order_date,
+        "Time Ordered": time_ordered,
+        "Time Order Picked": time_order_picked,
+        "Type of Order": type_of_order,
+        "Weather Conditions": weather_conditions,
+        "Road Traffic Density": road_traffic_density
+    }
+    st.table(pd.DataFrame([input_data]))
