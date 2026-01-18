@@ -83,17 +83,16 @@ project_folder/
 
 ## Usage
 
-Run the app: streamlit run app.py.
-Enter delivery person, order, location, and environmental details.
-Click Predict Delivery Time.
-View the predicted delivery time and input summary.
+- Run the app: streamlit run app.py.
+- Enter delivery person, order, location, and environmental details.
+- Click Predict Delivery Time.
+- View the predicted delivery time and input summary.
 
 
 ## Future Enhancements
 
-Integrate Google Maps API to calculate distance and route.
-Add real-time traffic and weather data for better predictions.
-Store historical predictions for analytics.
-Deploy to Streamlit Cloud or Heroku.
-**High-level flow:**
+- Integrate Google Maps API to calculate distance and route.
+- Add real-time traffic and weather data for better predictions.
+- Store historical predictions for analytics.
+- Deploy to Streamlit Cloud or Heroku.
 
