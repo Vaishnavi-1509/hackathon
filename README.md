@@ -11,14 +11,8 @@ A **Streamlit-based web application** to estimate delivery time for orders using
 3. [Architecture](#architecture)  
 4. [Dataset](#dataset)  
 5. [Folder Structure](#folder-structure)  
-6. [Setup Instructions](#setup-instructions)  
-7. [Running the App](#running-the-app)  
-8. [ML Model Integration](#ml-model-integration)  
-9. [Usage](#usage)  
-10. [Future Enhancements](#future-enhancements)  
-11. [Known Issues & Tips](#known-issues--tips)  
-12. [License](#license)  
-13. [Contact](#contact)  
+6. [Usage](#usage)  
+7. [Future Enhancements](#future-enhancements)  
 
 ---
 
