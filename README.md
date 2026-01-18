@@ -73,13 +73,12 @@ If using a machine learning model:
 ---
 
 ## Folder Structure
-project_folder/
-│
-├── app.py # Main Streamlit application
-├── model.py # Optional: ML model loading/prediction functions
-├── requirements.txt # Python dependencies
-├── data/ # Optional folder for datasets
-└── README.md # Project documentation
+project_folder
+- app.py # Main Streamlit application
+- model.py # Optional: ML model loading/prediction functions
+- requirements.txt # Python dependencies
+- data/ 
+- README.md # Project documentation
 
 ## Usage
 
